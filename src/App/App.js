@@ -7,7 +7,8 @@ import NoteListMain from '../NoteListMain/NoteListMain'
 import NotePageMain from '../NotePageMain/NotePageMain'
 import AddFolder from '../AddFolder/AddFolder'
 import AddNote from '../AddNote/AddNote'
-import dummyStore from '../dummy-store'
+import config from '../config'
+import NotefulContext from '../NotefulContext'
 import { getNotesForFolder, findNote, findFolder } from '../notes-helpers'
 import './App.css'
 
@@ -17,15 +18,69 @@ class App extends Component {
     folders: [],
   };
 
+  setNotes = (notes) => {
+    this.setState({
+      notes
+    })
+  }
+
+  setFolders = (folders) => {
+    this.setState({
+      folders
+    })
+  }
+
+  deleteNote = noteId => {
+    const newNotes = this.state.notes.filter(n =>
+      n.id !== noteId
+      )
+    this.setState({
+      notes: newNotes
+    })
+  }
+
   componentDidMount() {
-    // fake date loading from API call
-    setTimeout(() => this.setState(dummyStore), 600)
+    fetch(config.API_ENDPOINT_NOTES, {
+      method: 'GET',
+      headers: {
+        'content-type': 'application/json'
+      }
+    })
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(res.status)
+        }
+        return res.json()
+      })
+      // .then(data => console.log(data))
+      .then(data => this.setNotes(data))
+      .catch(err => console.log(err))
+
+    fetch(config.API_ENDPOINT_FOLDERS, {
+      method: 'GET',
+      headers: {
+        'content-type': 'application/json'
+      }
+    })
+    .then(res => {
+      if (!res.ok) {
+        throw new Error(res.status)
+      }
+      return res.json()
+    })
+    // .then(data => console.log(data))
+    .then(data => this.setFolders(data))
+    .catch(err => console.log(err))
   }
 
   renderNavRoutes() {
-    const { notes, folders } = this.state
+    const contextValue = {
+      notes: this.state.notes,
+      folders: this.state.folders,
+      deleteNote: this.deleteNote
+    }
     return (
-      <>
+      <NotefulContext.Provider value={contextValue}>
         {['/', '/folder/:folderId'].map(path =>
           <Route
             exact
@@ -33,8 +88,6 @@ class App extends Component {
             path={path}
             render={routeProps =>
               <NoteListNav
-                folders={folders}
-                notes={notes}
                 {...routeProps}
               />
             }
@@ -43,13 +96,9 @@ class App extends Component {
         <Route
           path='/note/:noteId'
           render={routeProps => {
-            const { noteId } = routeProps.match.params
-            const note = findNote(notes, noteId) || {}
-            const folder = findFolder(folders, note.folderId)
             return (
               <NotePageNav
                 {...routeProps}
-                folder={folder}
               />
             )
           }}
@@ -62,26 +111,27 @@ class App extends Component {
           path='/add-note'
           component={NotePageNav}
         />
-      </>
+      </NotefulContext.Provider>
     )
   }
 
   renderMainRoutes() {
-    const { notes, folders } = this.state
+    const contextValue = {
+      notes: this.state.notes,
+      folders: this.state.folders,
+      deleteNote: this.deleteNote
+    }
     return (
-      <>
+      <NotefulContext.Provider value={contextValue}>
         {['/', '/folder/:folderId'].map(path =>
           <Route
             exact
             key={path}
             path={path}
             render={routeProps => {
-              const { folderId } = routeProps.match.params
-              const notesForFolder = getNotesForFolder(notes, folderId)
               return (
                 <NoteListMain
                   {...routeProps}
-                  notes={notesForFolder}
                 />
               )
             }}
@@ -90,12 +140,9 @@ class App extends Component {
         <Route
           path='/note/:noteId'
           render={routeProps => {
-            const { noteId } = routeProps.match.params
-            const note = findNote(notes, noteId)
             return (
               <NotePageMain
                 {...routeProps}
-                note={note}
               />
             )
           }}
@@ -110,12 +157,11 @@ class App extends Component {
             return (
               <AddNote
                 {...routeProps}
-                folders={folders}
               />
             )
           }}
         />
-      </>
+      </NotefulContext.Provider>
     )
   }
 
