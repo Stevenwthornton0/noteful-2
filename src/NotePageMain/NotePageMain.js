@@ -1,7 +1,8 @@
 import React from 'react'
 import Note from '../Note/Note'
 import './NotePageMain.css'
-import NotefulContext from '../NotefulContext';
+import NotefulContext from '../NotefulContext'
+import PropTypes from 'prop-types'
 import { findNote } from '../notes-helpers'
 
 class NotePageMain extends React.Component {
@@ -9,6 +10,16 @@ class NotePageMain extends React.Component {
     note: {
       content: '',
     }
+  }
+
+  static PropTypes = {
+    notes: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      modified: PropTypes.string.isRequired,
+      folderId: PropTypes.string.isRequired,
+      content: PropTypes.string.isRequired
+    }))
   }
 
   handleDeleteNote = noteId => {

@@ -1,6 +1,7 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import CircleButton from '../CircleButton/CircleButton'
+import PropTypes from 'prop-types'
 import './NotePageNav.css'
 import { findNote, findFolder } from '../notes-helpers'
 import NotefulContext from '../NotefulContext'
@@ -10,6 +11,20 @@ class NotePageNav extends React.Component {
     history: {
       goBack: () => {}
     }
+  }
+
+  static PropTypes = {
+    notes: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      modified: PropTypes.string.isRequired,
+      folderId: PropTypes.string.isRequired,
+      content: PropTypes.string.isRequired
+    })),
+    folders: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired
+      }))
   }
 
   render() {

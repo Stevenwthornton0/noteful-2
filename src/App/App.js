@@ -8,6 +8,7 @@ import NotePageMain from '../NotePageMain/NotePageMain'
 import AddFolder from '../AddFolder/AddFolder'
 import AddNote from '../AddNote/AddNote'
 import config from '../config'
+import ErrorBoundary from '../ErrorBoundary'
 import NotefulContext from '../NotefulContext'
 import { getNotesForFolder, findNote, findFolder } from '../notes-helpers'
 import './App.css'
@@ -27,6 +28,18 @@ class App extends Component {
   setFolders = (folders) => {
     this.setState({
       folders
+    })
+  }
+
+  addNote = note => {
+    this.setState({
+      notes: [...this.state.notes, note]
+    })
+  }
+
+  addFolder = folder => {
+    this.setState({
+      folders: [...this.state.folders, folder]
     })
   }
 
@@ -77,7 +90,9 @@ class App extends Component {
     const contextValue = {
       notes: this.state.notes,
       folders: this.state.folders,
-      deleteNote: this.deleteNote
+      deleteNote: this.deleteNote,
+      addNote: this.addNote,
+      addFolder: this.addFolder
     }
     return (
       <NotefulContext.Provider value={contextValue}>
@@ -119,7 +134,9 @@ class App extends Component {
     const contextValue = {
       notes: this.state.notes,
       folders: this.state.folders,
-      deleteNote: this.deleteNote
+      deleteNote: this.deleteNote,
+      addNote: this.addNote,
+      addFolder: this.addFolder
     }
     return (
       <NotefulContext.Provider value={contextValue}>
@@ -169,7 +186,9 @@ class App extends Component {
     return (
       <div className='App'>
         <nav className='App__nav'>
-          {this.renderNavRoutes()}
+          <ErrorBoundary>
+            {this.renderNavRoutes()}
+          </ErrorBoundary>
         </nav>
         <header className='App__header'>
           <h1>
@@ -179,7 +198,9 @@ class App extends Component {
           </h1>
         </header>
         <main className='App__main'>
-          {this.renderMainRoutes()}
+          <ErrorBoundary>
+            {this.renderMainRoutes()}
+          </ErrorBoundary>
         </main>
       </div>
     )

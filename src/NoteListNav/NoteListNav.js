@@ -3,6 +3,7 @@ import { NavLink, Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import CircleButton from '../CircleButton/CircleButton'
 import { countNotesForFolder } from '../notes-helpers'
+import PropTypes from 'prop-types'
 import './NoteListNav.css'
 import NotefulContext from '../NotefulContext';
 
@@ -48,4 +49,11 @@ export default function NoteListNav(props) {
 
 NoteListNav.defaultProps = {
   folders: []
+}
+
+NoteListNav.propTypes = {
+  folders: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired
+  }))
 }

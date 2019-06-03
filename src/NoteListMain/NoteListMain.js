@@ -5,12 +5,19 @@ import Note from '../Note/Note'
 import CircleButton from '../CircleButton/CircleButton'
 import NotefulContext from '../NotefulContext'
 import { getNotesForFolder } from '../notes-helpers'
+import PropTypes from 'prop-types'
 import './NoteListMain.css'
 
 class NoteListMain extends React.Component {
 
   static Props = {
     notes: [],
+  }
+
+  static propTypes = {
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    modified: PropTypes.string.isRequired
   }
   
   render() {
@@ -49,7 +56,7 @@ class NoteListMain extends React.Component {
       }}
     </NotefulContext.Consumer>
     )
-  }  
+  }
 }
 
 

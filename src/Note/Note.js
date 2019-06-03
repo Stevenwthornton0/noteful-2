@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { format } from 'date-fns'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import PropTypes from 'prop-types'
 import './Note.css'
 import config from '../config'
 import NotefulContext from '../NotefulContext'
@@ -10,6 +11,12 @@ class Note extends React.Component {
 
 static defaultProps = {
   onDeleteNote: () => {}
+}
+
+static PropTypes = {
+  id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  modified: PropTypes.string.isRequired
 }
 
 static contextType = NotefulContext
@@ -39,7 +46,6 @@ deleteNoteRequest = (noteId) => {
 }
 
 render() {
-  console.log('blah')
   return (
         <div className='Note'>
           <h2 className='Note__title'>
