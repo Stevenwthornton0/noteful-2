@@ -27,11 +27,11 @@ class NotePageMain extends React.Component {
   }
 
   render() {
-    const { noteId } = this.props.match.params
+    const { note_id } = this.props.match.params
     return (
       <NotefulContext.Consumer>
         {(context) => {
-          const note = findNote(context.notes, noteId)
+          const note = findNote(context.notes, note_id)
           return (
             <section className='NotePageMain'>
               <Note

@@ -109,7 +109,7 @@ class App extends Component {
           />
         )}
         <Route
-          path='/note/:noteId'
+          path='/notes/:noteId'
           render={routeProps => {
             return (
               <NotePageNav

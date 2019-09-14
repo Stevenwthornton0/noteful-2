@@ -21,11 +21,11 @@ class NoteListMain extends React.Component {
   }
   
   render() {
-    const { folderId } = this.props.match.params
+    const { folder_id } = this.props.match.params
     return (
       <NotefulContext.Consumer>
         {(context) => {
-          const notes = getNotesForFolder(context.notes, folderId)
+          const notes = getNotesForFolder(context.notes, folder_id)
         return (
           <section className='NoteListMain'>
             <ul>
