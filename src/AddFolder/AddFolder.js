@@ -47,7 +47,6 @@ export default class AddFolder extends Component {
     const { name } = this.state
 
     const folder = {
-      id: Math.random().toString(36).substr(2, 9),
       name: name
     }
 

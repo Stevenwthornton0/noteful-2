@@ -1,16 +1,18 @@
 import React, { Component } from 'react'
-import { Route, Link } from 'react-router-dom'
+import { Route, Link, Switch } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import NoteListNav from '../NoteListNav/NoteListNav'
 import NotePageNav from '../NotePageNav/NotePageNav'
 import NoteListMain from '../NoteListMain/NoteListMain'
 import NotePageMain from '../NotePageMain/NotePageMain'
+import EditNote from '../EditNote/EditNote'
 import AddFolder from '../AddFolder/AddFolder'
 import AddNote from '../AddNote/AddNote'
 import config from '../config'
 import ErrorBoundary from '../ErrorBoundary'
 import NotefulContext from '../NotefulContext'
 import { getNotesForFolder, findNote, findFolder } from '../notes-helpers'
+import { getNotes } from '../api-requests'
 import './App.css'
 
 class App extends Component {
@@ -52,6 +54,17 @@ class App extends Component {
     })
   }
 
+  updateNote = updatedNote => {
+    const newNotes = this.state.notes.map(note => 
+      (note.id === updatedNote.id)
+        ? updatedNote
+        : note  
+    )
+    this.setState({
+      notes: newNotes
+    })
+  };
+
   componentDidMount() {
     fetch(config.API_ENDPOINT_NOTES, {
       method: 'GET',
@@ -91,6 +104,7 @@ class App extends Component {
       notes: this.state.notes,
       folders: this.state.folders,
       deleteNote: this.deleteNote,
+      updateNote: this.updateNote,
       addNote: this.addNote,
       addFolder: this.addFolder
     }
@@ -136,7 +150,8 @@ class App extends Component {
       folders: this.state.folders,
       deleteNote: this.deleteNote,
       addNote: this.addNote,
-      addFolder: this.addFolder
+      addFolder: this.addFolder,
+      updateNote: this.updateNote
     }
     return (
       <NotefulContext.Provider value={contextValue}>
@@ -155,7 +170,7 @@ class App extends Component {
           />
         )}
         <Route
-          path='/note/:noteId'
+          path='/notes/:noteId'
           render={routeProps => {
             return (
               <NotePageMain
@@ -173,6 +188,16 @@ class App extends Component {
           render={routeProps => {
             return (
               <AddNote
+                {...routeProps}
+              />
+            )
+          }}
+        />
+        <Route 
+          path='/edit/:noteId'
+          render={routeProps => {
+            return (
+              <EditNote 
                 {...routeProps}
               />
             )

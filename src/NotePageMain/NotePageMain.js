@@ -1,14 +1,22 @@
 import React from 'react'
 import Note from '../Note/Note'
+import { Link } from 'react-router-dom'
+import CircleButton from '../CircleButton/CircleButton'
 import './NotePageMain.css'
 import NotefulContext from '../NotefulContext'
 import PropTypes from 'prop-types'
-import { findNote } from '../notes-helpers'
+import config from '../config'
+import { findNote, countNotesForFolder } from '../notes-helpers'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 class NotePageMain extends React.Component {
-  static Props = {
+
+  static props = {
     note: {
       content: '',
+      id: '',
+      name: '',
+      date_modified: ''
     }
   }
 
@@ -27,17 +35,18 @@ class NotePageMain extends React.Component {
   }
 
   render() {
-    const { note_id } = this.props.match.params
+    const { noteId } = this.props.match.params;
+    console.log(this.state)
     return (
       <NotefulContext.Consumer>
         {(context) => {
-          const note = findNote(context.notes, note_id)
+          const note = findNote(context.notes, noteId)
           return (
             <section className='NotePageMain'>
               <Note
                 id={note.id}
                 name={note.name}
-                modified={note.modified}
+                modified={note.date_modified}
                 onDeleteNote={this.handleDeleteNote}
               />
               <div className='NotePageMain__content'>
@@ -45,6 +54,20 @@ class NotePageMain extends React.Component {
                   <p key={i}>{para}</p>
                 )}
               </div>
+
+              <div className='NoteMain_button-container'>
+                <CircleButton
+                  tag={Link}
+                  to={`/edit/${this.props.id}`}
+                  type='button'
+                  className='NoteMain_edit-note-button'
+                >
+                  <FontAwesomeIcon icon='edit' />
+                  <br />
+                  Edit
+                </CircleButton>
+              </div>
+
             </section>
           )
         }}

@@ -17,15 +17,15 @@ class NoteListMain extends React.Component {
   static propTypes = {
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    modified: PropTypes.string.isRequired
+    date_modified: PropTypes.string.isRequired
   }
   
   render() {
-    const { folder_id } = this.props.match.params
+    const { folderId } = this.props.match.params;
     return (
       <NotefulContext.Consumer>
         {(context) => {
-          const notes = getNotesForFolder(context.notes, folder_id)
+          const notes = getNotesForFolder(context.notes, folderId)
         return (
           <section className='NoteListMain'>
             <ul>
@@ -34,7 +34,7 @@ class NoteListMain extends React.Component {
                   <Note
                     id={note.id}
                     name={note.name}
-                    modified={note.modified}
+                    modified={note.date_modified}
                   />
                 </li>
               )}

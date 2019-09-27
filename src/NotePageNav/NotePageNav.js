@@ -33,7 +33,7 @@ class NotePageNav extends React.Component {
       <NotefulContext.Consumer>
         {(context) => {
           const note = findNote(context.notes, noteId) || {}
-          const folder = findFolder(context.folders, note.folderId)
+          const folder = findFolder(context.folders, note.folder_id)
           return(
             <div className='NotePageNav'>
               <CircleButton

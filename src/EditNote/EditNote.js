@@ -3,7 +3,8 @@ import NotefulForm from '../NotefulForm/NotefulForm'
 import NotefulContext from '../NotefulContext'
 import config from '../config'
 import ValidationError from '../ValidationError'
-import './AddNote.css'
+import { findNote, findCurrFolder } from '../notes-helpers'
+import './EditNote.css'
 
 export default class AddNote extends Component {
   constructor(props) {
@@ -110,6 +111,13 @@ export default class AddNote extends Component {
     })
   }
 
+  getCurrFold = (folders, note) => {
+    const folder = folders.filter(folder => 
+      folder.id !== note.folder_id
+      )
+    return folder.name
+  }
+
   handleSubmit = e => {
     e.preventDefault();
     const { name, content, folder } = this.state
@@ -119,13 +127,14 @@ export default class AddNote extends Component {
 
     const note = {
       name: name,
-      modified: date.toISOString(),
-      folder_id: folder,
+      date_modified: date.toISOString(),
+      folder_id: parseInt(folder),
       content: content
     }
+    console.log(note)
 
-    fetch(config.API_ENDPOINT_NOTES, {
-      method: 'POST',
+    fetch(`http://localhost:8000/notes/${this.props.match.params.noteId}`, {
+      method: 'PATCH',
       body: JSON.stringify(note),
       headers: {
         'content-type': 'application/json'
@@ -137,7 +146,7 @@ export default class AddNote extends Component {
             throw error
           })
         }
-        return res.json()
+        return res
       })
       .then(data => {
         this.setState({
@@ -145,7 +154,7 @@ export default class AddNote extends Component {
           content: '',
           folder: ''
         })
-        this.context.addNote(data)
+        this.context.updateNote(data)
         this.props.history.push('/')
       })
       .catch(error => {
@@ -155,43 +164,58 @@ export default class AddNote extends Component {
   }
 
   render() {
-    const { folders } = this.context
+    const { folders } = this.context;
+    const { noteId } = this.props.match.params;
+    const note = findNote(this.context.notes, noteId);
+    const currentFolder = findCurrFolder(folders, note.folder_id)
+    console.log(this.state)
     return (
       <section className='AddNote'>
-        <h2>Create a note</h2>
+
+        <h2>Edit note</h2>
+
         <NotefulForm onSubmit={this.handleSubmit}>
+
           <div className='field'>
             <label htmlFor='note-name-input'>
               Name
             </label>
-            <input type='text' id='note-name-input' onChange={e => this.updateName(e.target.value)} />
+
+            <input type='text' placeholder={note.name} id='note-name-input' onChange={e => this.updateName(e.target.value)} />
+
             <ValidationError 
               hasError={!this.state.nameValid}
               message={this.state.validationMessages.name}
-            />            
+            />       
           </div>
+
           <div className='field'>
             <label htmlFor='note-content-input'>
               Content
             </label>
-            <textarea id='note-content-input' onChange={e => this.updateContent(e.target.value)}/>
+
+            <textarea id='note-content-input' placeholder={note.content} onChange={e => this.updateContent(e.target.value)}/>
+
             <ValidationError 
               hasError={!this.state.contentValid}
               message={this.state.validationMessages.content}
             />
           </div>
+
           <div className='field'>
             <label htmlFor='note-folder-select'>
               Folder
             </label>
+
             <select id='note-folder-select' onChange={e => this.updateFolder(e.target.value)}>
-              <option value={null}>...</option>
+              <option value='' disabled selected>{currentFolder.name}</option>
               {folders.map(folder =>
                 <option key={folder.id} value={folder.id}>
                   {folder.name}
                 </option>
               )}
             </select>
+
             <ValidationError 
               hasError={!this.state.folderValid}
               message={this.state.validationMessages.folder}
@@ -199,7 +223,7 @@ export default class AddNote extends Component {
           </div>
           <div className='buttons'>
             <button type='submit' disabled={!this.state.formValid}>
-              Add note
+              Edit note
             </button>
           </div>
         </NotefulForm>

@@ -53,3 +53,11 @@
   font-size: 14px;
   position: absolute;
 }
+
+.edit {
+  font-size: 13px;
+  /* transform: rotate(-90deg); */
+  float: right;
+  text-decoration: none;
+  color: white;
+}

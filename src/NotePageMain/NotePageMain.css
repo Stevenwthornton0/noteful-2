@@ -10,3 +10,17 @@
   color: #3a3939;
   max-width: 380px;
 }
+
+.NoteMain_button-container {
+  max-width: 380px;
+  margin: 0 10px;
+}
+
+.NoteMain_edit-note-button {
+  margin: 0 auto 20px;
+}
+
+.NoteMain_edit-note-button:hover {
+  background-color: #29862e;
+  color: white;
+}
