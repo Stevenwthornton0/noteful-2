@@ -62,7 +62,7 @@ class NotePageMain extends React.Component {
                   type='button'
                   className='NoteMain_edit-note-button'
                 >
-                  <FontAwesomeIcon icon='edit' />
+                  <FontAwesomeIcon icon="edit" symbol="edit-icon" />
                   <br />
                   Edit
                 </CircleButton>
